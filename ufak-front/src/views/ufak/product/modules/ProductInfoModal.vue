@@ -143,25 +143,23 @@
         uploadLoading:false,
         previewVisible: false,
         previewImage: '',
-        // fileList: [
-        //     {
-        //         uid: '-1',
-        //         name: 'xxx.png',
-        //         status: 'done',
-        //         url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-        //         thumbUrl:
-        //             'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-        //     },
-        //     {
-        //         uid: '-3',
-        //         name: 'yyy.png',
-        //         status: 'done',
-        //         url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-        //         thumbUrl:
-        //             'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-        //     },
-        // ],
-        fileList: [],
+        fileList: [
+            {
+                uid: '-1',
+                name: 'xxx.png',
+                status: 'done',
+                url: window._CONFIG['domianURL']+"/sys/common/view"+"/files/20200224/touxiang_1582549417799.jpg",
+                thumbUrl: window._CONFIG['domianURL']+"/sys/common/view"+"/files/20200224/touxiang_1582549417799.jpg",
+            },
+            {
+                uid: '-2',
+                name: 'yyy.png',
+                status: 'done',
+                url: window._CONFIG['domianURL']+"/sys/common/view"+"/files/20200224/timg_1553160049215_1582549424841.jpg",
+                thumbUrl: window._CONFIG['domianURL']+"/sys/common/view"+"/files/20200224/timg_1553160049215_1582549424841.jpg",
+            },
+        ],
+        // fileList: [],
         url: {
           add: "/productInfo/add",
           edit: "/productInfo/edit",
@@ -198,14 +196,17 @@
         this.visible = false;
       },
       handleOk () {
-
-          let image = "";
-          for(let i=0;i<this.fileList.length;i++){
-              image += this.fileList[i].response.message + ","
-          }
-
-
         const that = this;
+        console.log("this.fileList=",this.fileList);
+        if(this.fileList.length == 0){
+            that.$message.warning("请上传商品图片！");
+            return;
+        }
+        let image = "";
+        for(let i=0;i<this.fileList.length;i++){
+            image += this.fileList[i].response.message + ","
+        }
+
         // 触发表单验证
         this.form.validateFields((err, values) => {
           if (!err) {
@@ -221,6 +222,7 @@
             }
             let formData = Object.assign(this.model, values);
             //时间格式化
+            formData.image = image;
             
             console.log(formData)
             httpAction(httpurl,formData,method).then((res)=>{
@@ -252,6 +254,7 @@
       },
       imageChange({ fileList }) {
           this.fileList = fileList;
+          console.log(this.fileList)
       },
       beforeUpload: function(file){
           var fileType = file.type;
