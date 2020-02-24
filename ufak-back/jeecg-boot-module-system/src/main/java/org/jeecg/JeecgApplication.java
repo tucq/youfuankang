@@ -5,12 +5,14 @@ import java.net.UnknownHostException;
 
 import org.apache.catalina.Context;
 import org.apache.tomcat.util.scan.StandardJarScanner;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.env.Environment;
 
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +22,8 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2
 @SpringBootApplication
 @EnableAutoConfiguration
+@ComponentScan(basePackages = {"org.jeecg", "com.ufak"})
+@MapperScan("com.ufak.*.mapper")
 public class JeecgApplication {
 
   public static void main(String[] args) throws UnknownHostException {
