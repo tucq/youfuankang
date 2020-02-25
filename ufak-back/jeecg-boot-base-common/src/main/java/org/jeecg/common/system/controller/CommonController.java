@@ -8,18 +8,18 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import org.jeecg.common.api.vo.Result;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.FileCopyUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.HandlerMapping;
@@ -194,6 +194,33 @@ public class CommonController {
 		}
 
 	}
+
+
+	@PostMapping(value = "/remove")
+	public Result<?> remove(@RequestBody JSONObject jsonObject) {
+		Result<?> result = new Result<>();
+		try {
+			String ctxPath = uploadpath;
+			JSONArray array = jsonObject.getJSONArray("filePaths");
+			if(array != null && array.size() > 0){
+				List<String> list = array.toJavaList(String.class);
+				for(String filePath : list){
+					File file = new File(ctxPath + File.separator + filePath);
+					if (file.exists()) {
+						file.delete();
+					}
+				}
+			}
+			result.setMessage("文件删除成功！");
+			result.setSuccess(true);
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setMessage(e.getMessage());
+			log.error(e.getMessage(), e);
+		}
+		return result;
+	}
+
 	/**
 	 * @功能：pdf预览Iframe
 	 * @param modelAndView
